@@ -1,0 +1,8 @@
+{
+  "name": "meupet",
+  "version": "1.0.0",
+  "description": "Sistema de Gestão da Clínica Veterinária MeuPet",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "test": "node --test tests/regras.test.js" },
+  "dependencies": { "better-sqlite3": "^11.5.0", "express": "^4.21.0" }
+}

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MeuPet – Gestão da clínica</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--tinta:#0d3b3c;--folha:#eef4f2;--papel:#fff;--linha:#cfdcd8;--acento:#1f8a70;--emerg:#c8442f;--ouro:#f0b43c;--ceu:#3b82c4;--rosa:#e8789a;--muted:#5b7573}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 Figtree,system-ui,sans-serif;background:var(--folha);color:var(--tinta)}
+header{background:var(--tinta);color:#fff;padding:12px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:800;letter-spacing:-.5px}
+.logo span{color:var(--ouro)}
+header label{margin-left:auto;font-size:14px;display:flex;gap:8px;align-items:center}
+select,input,textarea,button{font:inherit}
+header select{padding:6px 10px;border-radius:8px;border:0}
+nav{display:flex;gap:4px;padding:0 20px;background:var(--papel);border-bottom:1px solid var(--linha);overflow-x:auto;position:sticky;top:0;z-index:5}
+nav button{background:none;border:0;padding:12px 16px;cursor:pointer;border-bottom:3px solid transparent;color:var(--muted);font-weight:600;white-space:nowrap}
+nav button:hover{color:var(--tinta)}
+nav button[aria-selected=true]{color:var(--tinta);border-color:var(--acento)}
+main{max-width:1040px;margin:20px auto;padding:0 16px}
+section[hidden]{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start}
+.bloco{background:var(--papel);border:1px solid var(--linha);border-radius:12px;padding:18px}
+h2{margin:0 0 12px;font-size:18px}
+form{display:grid;gap:10px}
+label.c{display:grid;gap:3px;font-size:14px;font-weight:600}
+input,select,textarea{padding:8px 10px;border:1px solid var(--linha);border-radius:8px;background:#fff;width:100%}
+:focus-visible{outline:3px solid var(--ouro);outline-offset:1px}
+.btn{background:var(--acento);color:#fff;border:0;padding:9px 14px;border-radius:8px;font-weight:600;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.sec{background:var(--folha);color:var(--tinta);border:1px solid var(--linha)}
+.item{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--linha)}
+.item:first-of-type{border-top:0}
+.tag{font-size:12px;font-weight:800;padding:2px 8px;border-radius:99px;background:var(--folha);white-space:nowrap}
+.tag.e{background:var(--emerg);color:#fff}.tag.ok{background:var(--acento);color:#fff}.tag.ab{background:var(--ouro)}
+.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;flex:none}
+.quem{display:flex;gap:12px;align-items:center}
+.msg{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);padding:10px 16px;border-radius:8px;color:#fff;background:var(--tinta);max-width:90vw;z-index:9}
+.msg.erro{background:var(--emerg)}
+.vazio{color:var(--muted)}
+.guia{background:#fff8e6;border:1px dashed var(--ouro);border-radius:12px;padding:18px;display:grid;gap:10px;justify-items:start}
+small{color:var(--muted)}
+pre{white-space:pre-wrap;margin:4px 0;font:inherit}
+/* Início */
+.hero{background:linear-gradient(120deg,var(--tinta),#17625e);color:#fff;border-radius:16px;padding:24px;display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:center;position:relative;overflow:hidden}
+.hero h2{font-size:28px;margin:0 0 4px;letter-spacing:-.5px}
+.hero p{margin:0 0 14px;opacity:.85}
+.hero .acoes{display:flex;gap:8px;flex-wrap:wrap}
+.hero .btn{background:var(--ouro);color:var(--tinta)}
+.hero .btn.sec{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)}
+.proximo{background:#fff;color:var(--tinta);border-radius:14px;padding:16px}
+.proximo small{display:block;margin-bottom:6px}
+.proximo .nome{font-size:22px;font-weight:800}
+.patas{position:absolute;right:-20px;top:-20px;opacity:.07;width:200px}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:16px 0}
+.chip{background:var(--papel);border:1px solid var(--linha);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;cursor:pointer;text-align:left;color:inherit;font:inherit}
+.chip:hover{border-color:var(--acento)}
+.chip i{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-style:normal;font-size:20px;flex:none}
+.chip b{display:block;font-size:22px;line-height:1.1}
+.chip span{font-size:13px;color:var(--muted)}
+ol.passos{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+ol.passos li{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--folha);cursor:pointer}
+ol.passos li .ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--linha);display:grid;place-items:center;font-size:14px;background:#fff;flex:none}
+ol.passos li.feito .ck{background:var(--acento);border-color:var(--acento);color:#fff}
+ol.passos li.feito{opacity:.75}
+@media (max-width:720px){.hero{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.msg{animation:s .2s}@keyframes s{from{opacity:0;transform:translate(-50%,8px)}}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><g fill="#f0b43c"><ellipse cx="14" cy="28" rx="7" ry="9"/><ellipse cx="28" cy="16" rx="7" ry="9"/><ellipse cx="46" cy="16" rx="7" ry="9"/><ellipse cx="58" cy="30" rx="6" ry="8"/><path d="M32 30c-10 0-20 12-17 21 2 6 9 6 17 4 8 2 15 2 17-4 3-9-7-21-17-21z"/></g></svg>
+    Meu<span>Pet</span>
+  </div>
+  <label>Entrar como
+    <select id="perfil"><option value="ATENDENTE">Atendente</option><option value="VETERINARIO">Veterinário</option></select>
+  </label>
+</header>
+<nav role="tablist" id="abas"></nav>
+<main>
+
+<section id="home">
+  <div class="hero">
+    <svg class="patas" viewBox="0 0 64 64" aria-hidden="true"><g fill="#fff"><ellipse cx="14" cy="28" rx="7" ry="9"/><ellipse cx="28" cy="16" rx="7" ry="9"/><ellipse cx="46" cy="16" rx="7" ry="9"/><ellipse cx="58" cy="30" rx="6" ry="8"/><path d="M32 30c-10 0-20 12-17 21 2 6 9 6 17 4 8 2 15 2 17-4 3-9-7-21-17-21z"/></g></svg>
+    <div><h2 id="saud"></h2><p id="subsaud"></p><div class="acoes" id="acoesHome"></div></div>
+    <div class="proximo" id="proximo"></div>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="bloco"><h2 id="tPassos"></h2><ol class="passos" id="passos"></ol></div>
+</section>
+
+<section id="responsaveis" hidden>
+  <div class="grid">
+    <div class="bloco"><h2>Novo responsável</h2>
+      <form id="fResp">
+        <label class="c">Nome<input name="nome" required></label>
+        <label class="c">CPF<input name="cpf" required inputmode="numeric" placeholder="somente números"></label>
+        <label class="c">Telefone<input name="fone" required></label>
+        <label class="c">E-mail<input name="email" type="email"></label>
+        <label class="c">Endereço<input name="endereco"></label>
+        <label class="c">Observações<input name="observacoes"></label>
+        <button class="btn">Salvar responsável</button>
+      </form></div>
+    <div class="bloco"><h2>Responsáveis cadastrados</h2><div id="lResp"></div></div>
+  </div>
+</section>
+
+<section id="pets" hidden>
+  <div class="grid">
+    <div id="blocoPet">
+      <div class="bloco" id="petForm"><h2>Novo pet</h2>
+        <form id="fPet">
+          <label class="c">Responsável<select name="responsavel_id" required></select></label>
+          <label class="c">Nome do pet<input name="nome" required></label>
+          <label class="c">Raça<input name="raca"></label>
+          <label class="c">Data de nascimento<input name="dt_nascimento" type="date"></label>
+          <label class="c">Cor da pelagem<input name="cor_pelagem"></label>
+          <label class="c">Peso (kg)<input name="peso" type="number" step="0.1" min="0.1"></label>
+          <label class="c">Nº do microchip<input name="numero_microchip"></label>
+          <button class="btn">Salvar pet</button>
+        </form></div>
+      <div class="guia" id="petVazio" hidden><strong>Cadastre um responsável primeiro</strong>
+        <span>Todo pet pertence a um responsável. Depois de salvar o responsável, você volta aqui com ele já selecionado.</span>
+        <button class="btn" data-ir="responsaveis">Cadastrar responsável</button></div>
+    </div>
+    <div class="bloco"><h2>Pets cadastrados</h2><div id="lPets"></div></div>
+  </div>
+</section>
+
+<section id="consulta" hidden>
+  <div class="grid">
+    <div id="blocoCons">
+      <div class="bloco" id="consForm"><h2>Triagem e abertura de consulta</h2>
+        <form id="fCons">
+          <label class="c">Tipo (triagem)<select name="tipo"><option value="NORMAL">Normal</option><option value="EMERGENCIA">Emergência</option></select></label>
+          <label class="c">Pet<select name="pet_id" required></select></label>
+          <label class="c">Veterinário<select name="veterinario_id" required></select></label>
+          <label class="c">Data e horário<input name="data_hora" type="datetime-local" required></label>
+          <button class="btn">Abrir consulta</button>
+        </form></div>
+      <div class="guia" id="consVazio" hidden><strong>Cadastre um pet primeiro</strong>
+        <span>A consulta precisa de um pet cadastrado.</span>
+        <button class="btn" data-ir="pets">Cadastrar pet</button></div>
+    </div>
+    <div class="bloco"><h2>Como funciona</h2>
+      <p>1. Escolha <strong>Normal</strong> ou <strong>Emergência</strong> na triagem.<br>2. Escolha o pet e o veterinário.<br>3. Ao abrir, o sistema leva você à cobrança desta consulta.</p>
+      <small>Emergências passam na frente na fila do veterinário.</small></div>
+  </div>
+</section>
+
+<section id="fila" hidden><div class="bloco"><h2>Fila de atendimento</h2><div id="lFila"></div></div></section>
+
+<section id="atendimento" hidden>
+  <div class="guia" id="vazioAt"><strong>Nenhuma consulta selecionada</strong><span>Escolha uma consulta na fila e use “Atender”.</span><button class="btn" data-ir="fila">Ir para a fila</button></div>
+  <div class="grid" id="painelAt" hidden>
+    <div class="bloco"><h2 id="tAt"></h2>
+      <form id="fAnot"><label class="c">Anotações do atendimento<textarea name="anotacoes" rows="5" required></textarea></label>
+        <button class="btn">Salvar anotações</button></form>
+      <p><button class="btn sec" id="bFin">Finalizar consulta</button></p></div>
+    <div class="bloco"><h2>Receita</h2>
+      <form id="fRec"><label class="c">Prescrição<textarea name="prescricao" rows="3" required></textarea></label>
+        <button class="btn">Registrar receita</button></form>
+      <h2 style="margin-top:16px">Solicitar exame</h2>
+      <form id="fEx"><label class="c">Descrição do exame<input name="descricao" required></label>
+        <button class="btn">Solicitar exame</button></form>
+      <div id="lReg"></div></div>
+    <div class="bloco"><h2>Histórico do pet</h2><div id="lHist"></div></div>
+  </div>
+</section>
+
+<section id="cobrancas" hidden>
+  <div class="grid">
+    <div id="blocoCob">
+      <div class="bloco" id="cobForm"><h2>Lançar cobrança</h2>
+        <form id="fCob">
+          <label class="c">Responsável<select name="responsavel_id" required></select></label>
+          <label class="c">Descrição<input name="descricao" required value="Consulta"></label>
+          <label class="c">Valor (R$)<input name="valor" type="number" step="0.01" min="0" required></label>
+          <button class="btn">Lançar cobrança</button></form></div>
+      <div class="guia" id="cobVazio" hidden><strong>Cadastre um responsável primeiro</strong>
+        <button class="btn" data-ir="responsaveis">Cadastrar responsável</button></div>
+    </div>
+    <div class="bloco"><h2>Cobranças</h2><div id="lCob"></div></div>
+  </div>
+</section>
+
+</main>
+<script>
+const $=s=>document.querySelector(s), esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const brl=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const dh=s=>new Date(s).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
+const cpfFmt=c=>String(c).replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4');
+const CORES=['#1f8a70','#3b82c4','#e8789a','#c98a12','#7a5bc4'];
+const avatar=n=>`<span class="avatar" style="background:${CORES[(n||'?').charCodeAt(0)%CORES.length]}">${esc((n||'?')[0].toUpperCase())}</span>`;
+const perfil=()=>$('#perfil').value;
+let atual=null, D={rs:[],ps:[],vs:[],cs:[],cb:[]}, pendConsulta=null;
+
+function aviso(t,erro){const m=document.createElement('div');m.className='msg'+(erro?' erro':'');m.setAttribute('role','status');m.textContent=t;document.body.append(m);setTimeout(()=>m.remove(),3800)}
+async function api(m,u,b){
+  const r=await fetch('/api'+u,{method:m,headers:{'content-type':'application/json','x-perfil':perfil()},body:b?JSON.stringify(b):undefined});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok){const e=new Error(j.erro||'Erro');e.dados=j;throw e}
+  return j;
+}
+const dados=f=>Object.fromEntries([...new FormData(f)].filter(([,v])=>v!==''));
+function enviar(id,fn){$(id).addEventListener('submit',async e=>{e.preventDefault();try{await fn(dados(e.target),e.target)}catch(x){aviso(x.message,true)}})}
+
+const ABAS={
+  ATENDENTE:[['home','Início'],['responsaveis','Responsáveis'],['pets','Pets'],['consulta','Nova consulta'],['fila','Fila'],['cobrancas','Cobranças']],
+  VETERINARIO:[['home','Início'],['fila','Fila'],['atendimento','Atendimento'],['pets','Pets']]};
+function montarAbas(){
+  $('#abas').innerHTML=ABAS[perfil()].map(([id,t])=>`<button role="tab" data-id="${id}">${t}</button>`).join('');
+  $('#abas').querySelectorAll('button').forEach(b=>b.onclick=()=>ir(b.dataset.id));
+  ir('home');
+}
+async function ir(id,antes){
+  if(!ABAS[perfil()].some(a=>a[0]===id))id='home';
+  document.querySelectorAll('main>section').forEach(s=>s.hidden=s.id!==id);
+  $('#abas').querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',b.dataset.id===id));
+  await carregar();
+  if(antes)antes();
+  window.scrollTo({top:0});
+}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ir]');if(t)ir(t.dataset.ir)});
+
+const opts=(l,f)=>l.map(x=>`<option value="${x.id}">${esc(f(x))}</option>`).join('');
+async function carregar(){
+  try{
+    const [rs,ps,vs,cs,cb]=await Promise.all(['/responsaveis','/pets','/veterinarios','/consultas','/cobrancas'].map(u=>api('GET',u)));
+    D={rs,ps,vs,cs,cb};
+    const manter=n=>document.querySelector(n)?.value;
+    const pr=manter('#fPet [name=responsavel_id]'),cr=manter('#fCob [name=responsavel_id]'),pp=manter('#fCons [name=pet_id]');
+    $('#fPet [name=responsavel_id]').innerHTML=opts(rs,r=>r.nome+' ('+cpfFmt(r.cpf)+')');
+    $('#fCob [name=responsavel_id]').innerHTML=opts(rs,r=>r.nome);
+    $('#fCons [name=pet_id]').innerHTML=opts(ps,p=>p.nome+' – '+p.responsavel_nome);
+    $('#fCons [name=veterinario_id]').innerHTML=opts(vs,v=>v.nome+' ('+v.especialidade+')');
+    if(pr)$('#fPet [name=responsavel_id]').value=pr; if(cr)$('#fCob [name=responsavel_id]').value=cr; if(pp)$('#fCons [name=pet_id]').value=pp;
+    const dt=$('#fCons [name=data_hora]'); if(!dt.value){const n=new Date();n.setMinutes(n.getMinutes()-n.getTimezoneOffset());dt.value=n.toISOString().slice(0,16)}
+    // estados vazios guiados
+    const mostrar=(vazio,form,tem)=>{$(vazio).hidden=tem;$(form).hidden=!tem};
+    mostrar('#petVazio','#petForm',rs.length>0);
+    mostrar('#consVazio','#consForm',ps.length>0);
+    mostrar('#cobVazio','#cobForm',rs.length>0);
+    $('#petForm').hidden=$('#petForm').hidden||perfil()!=='ATENDENTE';
+    renderListas();renderHome();
+  }catch(x){aviso(x.message,true)}
+}
+function renderListas(){
+  $('#lResp').innerHTML=D.rs.length?D.rs.map(r=>`<div class="item"><div class="quem">${avatar(r.nome)}<div><strong>${esc(r.nome)}</strong><br><small>${cpfFmt(r.cpf)} · ${esc(r.fone)}</small></div></div>
+    <div><span class="tag">${D.ps.filter(p=>p.responsavel_id===r.id).length} pet(s)</span> <button class="btn sec" data-novopet="${r.id}">+ Pet</button></div></div>`).join(''):'<p class="vazio">Nenhum responsável ainda. Preencha o formulário e use “Salvar responsável”.</p>';
+  document.querySelectorAll('[data-novopet]').forEach(b=>b.onclick=()=>ir('pets',()=>{$('#fPet [name=responsavel_id]').value=b.dataset.novopet;$('#fPet [name=nome]').focus()}));
+  $('#lPets').innerHTML=D.ps.length?D.ps.map(p=>`<div class="item"><div class="quem">${avatar(p.nome)}<div><strong>${esc(p.nome)}</strong> <small>${esc(p.raca||'sem raça')}</small><br><small>${p.idade??'?'} anos · ${p.peso??'?'} kg · de ${esc(p.responsavel_nome)}</small></div></div></div>`).join(''):'<p class="vazio">Nenhum pet cadastrado.</p>';
+  $('#lFila').innerHTML=D.cs.length?D.cs.map(c=>`<div class="item"><div class="quem">${avatar(c.pet_nome)}<div><strong>${esc(c.pet_nome)}</strong> <small>de ${esc(c.responsavel_nome)}</small><br><small>${esc(c.veterinario_nome)} · ${dh(c.data_hora)}</small></div></div>
+    <div><span class="tag ${c.tipo==='EMERGENCIA'?'e':''}">${c.tipo==='EMERGENCIA'?'Emergência':'Normal'}</span> <span class="tag">${c.status.replace('_',' ').toLowerCase()}</span>
+    ${perfil()==='VETERINARIO'&&c.status!=='FINALIZADA'?`<button class="btn" data-at="${c.id}">Atender</button>`:''}</div></div>`).join(''):'<p class="vazio">Nenhuma consulta aberta. A atendente abre consultas em “Nova consulta”.</p>';
+  document.querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>atender(b.dataset.at));
+  $('#lCob').innerHTML=D.cb.length?D.cb.map(c=>`<div class="item"><div>${esc(c.descricao)} <small>· ${esc(c.responsavel_nome)}</small><br><strong>${brl(c.valor)}</strong></div>
+    <div>${c.pago?'<span class="tag ok">Pago</span>':`<span class="tag ab">Em aberto</span> <button class="btn" data-pg="${c.id}">Marcar como paga</button>`}</div></div>`).join(''):'<p class="vazio">Nenhuma cobrança lançada.</p>';
+  document.querySelectorAll('[data-pg]').forEach(b=>b.onclick=async()=>{try{await api('PATCH',`/cobrancas/${b.dataset.pg}/pagar`);aviso('Cobrança paga');carregar()}catch(x){aviso(x.message,true)}});
+}
+function renderHome(){
+  const h=new Date().getHours(), vet=perfil()==='VETERINARIO';
+  $('#saud').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+(vet?', doutor(a)!':'!');
+  const fila=D.cs.filter(c=>c.status!=='FINALIZADA'), emerg=fila.filter(c=>c.tipo==='EMERGENCIA').length;
+  $('#subsaud').textContent=fila.length?`Há ${fila.length} animal(is) esperando${emerg?`, ${emerg} em emergência`:''}.`:'Fila vazia. Bom momento para organizar os cadastros.';
+  $('#acoesHome').innerHTML=vet?'<button class="btn" data-ir="fila">Ver fila</button>':'<button class="btn" data-ir="consulta">Nova consulta</button><button class="btn sec" data-ir="responsaveis">Novo responsável</button>';
+  const p=fila[0];
+  $('#proximo').innerHTML=p?`<small>Próximo da fila</small><div class="quem">${avatar(p.pet_nome)}<div><div class="nome">${esc(p.pet_nome)}</div><small>de ${esc(p.responsavel_nome)} · ${esc(p.veterinario_nome)}</small></div></div><p style="margin:10px 0 0"><span class="tag ${p.tipo==='EMERGENCIA'?'e':''}">${p.tipo==='EMERGENCIA'?'Emergência':'Normal'}</span></p>`:'<small>Próximo da fila</small><div class="nome">Ninguém aguardando</div>';
+  const aberto=D.cb.filter(c=>!c.pago);
+  const chip=(cor,ic,n,t,ir)=>`<button class="chip" data-ir="${ir}"><i style="background:${cor}22">${ic}</i><div><b>${n}</b><span>${t}</span></div></button>`;
+  $('#chips').innerHTML=chip('#1f8a70','🐾',D.ps.length,'pets cadastrados','pets')+chip('#3b82c4','🕒',fila.length,'na fila','fila')+chip('#c8442f','🚨',emerg,'emergências','fila')+
+    (vet?'':chip('#f0b43c','💰',brl(aberto.reduce((s,c)=>s+c.valor,0)),aberto.length+' cobrança(s) em aberto','cobrancas'));
+  const passos=vet?[[D.cs.length>0,'Ver a fila e escolher quem atender','fila'],[D.cs.some(c=>c.status!=='AGUARDANDO'),'Fazer anotações e registrar receita ou exame','fila'],[D.cs.some(c=>c.status==='FINALIZADA'),'Finalizar a consulta','fila']]
+   :[[D.rs.length>0,'Cadastrar o responsável','responsaveis'],[D.ps.length>0,'Cadastrar o pet','pets'],[D.cs.length>0,'Fazer a triagem e abrir a consulta','consulta'],[D.cb.length>0,'Lançar a cobrança','cobrancas'],[D.cs.some(c=>c.status==='FINALIZADA'),'Veterinário finaliza o atendimento','fila']];
+  $('#tPassos').textContent='Passo a passo do atendimento';
+  $('#passos').innerHTML=passos.map(([ok,t,i])=>`<li class="${ok?'feito':''}" data-ir="${i}"><span class="ck">${ok?'✓':''}</span>${t}</li>`).join('');
+}
+async function atender(id){
+  atual=await api('GET','/consultas/'+id);
+  await ir('atendimento');
+  $('#vazioAt').hidden=true;$('#painelAt').hidden=false;
+  $('#tAt').textContent=`${atual.pet_nome} – ${atual.responsavel_nome}`;
+  $('#fAnot [name=anotacoes]').value=atual.anotacoes||'';
+  await painel();
+}
+async function painel(){
+  const c=await api('GET','/consultas/'+atual.id);
+  $('#lReg').innerHTML=[...c.receitas.map(r=>`<div class="item"><pre><strong>Receita</strong> (${dh(r.data_emissao)})\n${esc(r.prescricao)}</pre></div>`),
+    ...c.exames.map(e=>`<div class="item"><span><strong>Exame:</strong> ${esc(e.descricao)}</span></div>`)].join('');
+  const h=await api('GET',`/pets/${c.pet_id}/historico`);
+  const ant=h.consultas.filter(x=>x.id!==c.id);
+  $('#lHist').innerHTML=`<p><strong>${esc(h.pet.nome)}</strong> <small>${esc(h.pet.raca||'sem raça')} · ${h.pet.idade??'?'} anos · ${h.pet.peso??'?'} kg</small></p>`+
+    (ant.length?ant.map(x=>`<div class="item"><div>${dh(x.data_hora)} · ${esc(x.veterinario_nome)}<pre>${esc(x.anotacoes||'Sem anotações')}</pre>${x.receitas.map(r=>`<small>Receita: ${esc(r.prescricao)}</small>`).join('<br>')}</div></div>`).join(''):'<p class="vazio">Primeira consulta deste pet.</p>');
+}
+enviar('#fResp',async(d,f)=>{
+  let r;
+  try{r=await api('POST','/responsaveis',d);aviso('Responsável salvo. Agora cadastre o pet dele.')}
+  catch(x){if(x.dados?.existente){r=x.dados.existente;aviso(`CPF já cadastrado em nome de ${r.nome}. Cadastre o pet dele.`,true)}else throw x}
+  f.reset();ir('pets',()=>{$('#fPet [name=responsavel_id]').value=r.id;$('#fPet [name=nome]').focus()});
+});
+enviar('#fPet',async(d,f)=>{await api('POST','/pets',d);aviso('Pet salvo. Abra a consulta.');f.reset();
+  ir('consulta',()=>{const ps=D.ps;if(ps.length)$('#fCons [name=pet_id]').value=ps.find(p=>p.responsavel_id==d.responsavel_id&&p.nome===d.nome)?.id||ps[0].id})});
+enviar('#fCons',async(d,f)=>{
+  const c=await api('POST','/consultas',d), pet=D.ps.find(p=>p.id==d.pet_id);
+  aviso('Consulta aberta. Lance a cobrança.');pendConsulta=c.id;
+  ir('cobrancas',()=>{$('#fCob [name=responsavel_id]').value=pet.responsavel_id;$('#fCob [name=descricao]').value=d.tipo==='EMERGENCIA'?'Consulta de emergência':'Consulta';$('#fCob [name=valor]').focus()});
+});
+enviar('#fCob',async(d,f)=>{if(pendConsulta)d.consulta_id=pendConsulta;pendConsulta=null;await api('POST','/cobrancas',d);aviso('Cobrança lançada');f.reset();$('#fCob [name=descricao]').value='Consulta';carregar()});
+enviar('#fAnot',async d=>{await api('PATCH',`/consultas/${atual.id}/anotacoes`,d);aviso('Anotações salvas')});
+enviar('#fRec',async(d,f)=>{await api('POST',`/consultas/${atual.id}/receitas`,d);aviso('Receita registrada');f.reset();painel()});
+enviar('#fEx',async(d,f)=>{await api('POST',`/consultas/${atual.id}/exames`,d);aviso('Exame solicitado');f.reset();painel()});
+$('#bFin').onclick=async()=>{try{await api('POST',`/consultas/${atual.id}/finalizar`);aviso('Consulta finalizada');$('#painelAt').hidden=true;$('#vazioAt').hidden=false;ir('fila')}catch(x){aviso(x.message,true)}};
+$('#perfil').onchange=montarAbas;
+montarAbas();
+</script>
+</body>
+</html>
